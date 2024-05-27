@@ -9,280 +9,279 @@
         body {
             background-color: black;
             color: white;
-			top: 0;
-            margin: 10px; /* Убираем отступы */
-            padding: 5px; /* Убираем отступы */
+            margin: 10px;
+            padding: 5px;
         }
 
         a {
             color: white;
             text-decoration: none;
             cursor: pointer;
-			font-size: 20px; 
-
+            font-size: 20px;
         }
 
         .header {
             position: fixed;
             top: 0px;
-            right: 20px; /* Сдвигаем вправо, чтобы было отступление от края */
+            right: 20px;
             padding: 10px;
             font-size: 30px;
         }
-#searchInput {
-    margin-top: 40px; 
-	/* Добавляем отступ сверху, чтобы сделать место для заголовка */
-}
+
+        #searchInput {
+            margin-top: 40px;
+        }
 
         .progress-bar-container {
             position: fixed;
-            top: 50px; /* Немного ниже заголовка и текста о загружаемом файле */
-            right: 1px; /* Центрируем по горизонтали */
-
-            width: 300px; /* Ширина прогресс-бара */
+            top: 50px;
+            right: 1px;
+            width: 300px;
             height: 20px;
             background-color: #555;
             border-radius: 10px;
             overflow: hidden;
-            display: none; /* Изначально скрыт */
+            display: none;
         }
-#ipList {
-    position: relative;
-    left: 0;
-    top: 10px;
-    padding: 0;
-    margin: 0;
-    list-style-type: none;
-}
-
 
         .progress-bar {
             height: 100%;
-            background-color: #333; /* Серый цвет прогресс-бара */
-            width: 0; /* Изначально ширина нулевая */
-            transition: width 0.5s ease-in-out; /* Анимация изменения ширины */
+            background-color: #333;
+            width: 0;
+            transition: width 0.5s ease-in-out;
         }
 
         .progress-bar-fill {
             height: 100%;
-            background-color: white; /* Белый цвет заполняющей линии */
+            background-color: white;
         }
-		.header a {
-    color: white; /* Цвет текста */
-    text-decoration: none; /* Убираем подчеркивание */
-    cursor: pointer;
-    font-size: 30px; /* Размер шрифта */
-}
 
-h1 {
-    position: absolute; /* Используем абсолютное позиционирование */
-    top: 10px; /* Размещаем заголовок вверху страницы */
-    left: 10px; /* Размещаем заголовок слева */
-    margin-top: 0; /* Убираем верхний отступ у заголовка */
-	font-size: 40px; /* Устанавливаем размер шрифта 30 пикселей */
-}
-@media only screen and (max-width: 600px) {
-.container {
-    position: relative; /* Добавляем относительное позиционирование для контейнера */
-}
-#searchInput {
-    margin-top: 9em; /* Добавляем отступ сверху, чтобы сделать место для заголовка */
-}
-
-.header {
-    position: absolute;
-    left: 0em; /* Используем em для гибкости */
-    top: 3em; /* Используем em для гибкости */
-    z-index: 1;
-}
-        body {
-            background-color: black;
+        .header a {
             color: white;
-            margin: 6px; /* Убираем отступы */
-            padding: 5px; /* Убираем отступы */
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 30px;
         }
-.progress-bar-container {
-    position: absolute;
-    left: 10em; /* Используем em для гибкости */
-    top: 3em; /* Используем em для гибкости */
-    z-index: 1;
-	visibility: hidden;
-}
 
+        h1 {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            margin-top: 0;
+            font-size: 40px;
+        }
 
+        @media only screen and (max-width: 600px) {
+            .container {
+                position: relative;
+            }
+
+            #searchInput {
+                margin-top: 9em;
+            }
+
+            .header {
+                position: absolute;
+                left: 0em;
+                top: 3em;
+                z-index: 1;
+            }
+
+            body {
+                margin: 6px;
+                padding: 5px;
+            }
+
+            .progress-bar-container {
+                position: absolute;
+                left: 10em;
+                top: 3em;
+                z-index: 1;
+                visibility: hidden;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="progress-container">
-<div class="header">
-    <a href="https://moshiax.github.io/MinotaurIndex/minotauranalytics" target="_blank">
-        <span id="analyticsText">Minotaur Analytics</span>
-    </a>
-</div>
+        <div class="header">
+            <a href="https://moshiax.github.io/MinotaurIndex/minotauranalytics" target="_blank">
+                <span id="analyticsText">Minotaur Analytics</span>
+            </a>
+        </div>
 
         <div class="progress-bar-container">
             <div class="progress-bar">
-                <div class="progress-bar-fill"></div> <!-- Добавлено для заполнения прогресс-бара -->
+                <div class="progress-bar-fill"></div>
             </div>
             <div class="loading-file-info"></div>
         </div>
     </div>
 
-<body>
     <h1>МИНОТАВР SEARCH ENGINE</h1>
-    <div class="header">
-        <a href="https://moshiax.github.io/MinotaurIndex/minotauranalytics" target="_blank">
-            <span id="analyticsText">Minotaur Analytics</span>
-        </a>
-    </div>
-    <div class="progress-bar-container">
-        <!-- Прогресс-бар и информация о загрузке -->
-    </div>
+
     <input type="text" id="searchInput" placeholder="Search..." oninput="searchIPs()">
-    <!-- Остальной HTML код -->
-</body>
-    <ul id="ipList">
-        <!-- Динамически загруженные IP-адреса будут здесь -->
-    </ul>
+
+    <ul id="ipList"></ul>
 
     <script>
-        var originalIPs = new Set(); // Множество для хранения исходных данных
-        var totalIPs = []; // Массив для хранения обработанных данных
+        var originalIPs = new Set();
+        var totalIPs = [];
         var loadedIPs = 0;
         var loading = false;
-        var totalFiles = 0; // Глобальные переменные для хранения общего количества файлов и количества уже загруженных файлов
+        var totalFiles = 0;
         var loadedFiles = 0;
 
-function loadIPs() {
-    var repoUrl = 'https://api.github.com/repos/olegbeznogy/minotaurindex/contents/';
-    var fileExt = '.txt';
+        function fetchRepositories() {
+            var user = 'olegbeznogy';
+            var url = `https://api.github.com/users/${user}/repos`;
 
-    var page = 1;
-    var perPage = 100; // Количество файлов, запрашиваемых за один запрос
+            fetch(url)
+                .then(response => response.json())
+                .then(repos => {
+                    var repoPromises = repos.map(repo => {
+                        return countFilesInRepo(repo.name);
+                    });
 
-    function fetchFiles(page) {
-        var url = repoUrl + '?page=' + page + '&per_page=' + perPage;
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                var files = JSON.parse(xhr.responseText);
-                var txtFiles = files.filter(function(file) {
-                    return file.name.endsWith(fileExt);
+                    // Once all repositories have been processed, start loading files
+                    Promise.all(repoPromises).then(() => {
+                        // Display the progress bar
+                        var progressBarContainer = document.querySelector('.progress-bar-container');
+                        progressBarContainer.style.display = 'block';
+
+                        // Start loading files from all repositories
+                        repos.forEach(repo => {
+                            fetchFilesFromRepo(repo.name);
+                        });
+                    });
                 });
-                totalFiles += txtFiles.length;
-                txtFiles.forEach(function(file) {
-                    if (file.name !== 'connected_ips.txt') {
-                        loadFileContent(file);
-                    }
-                });
-                // Если есть еще файлы, запрашиваем следующую страницу
-                if (txtFiles.length === perPage) {
-                    fetchFiles(page + 1);
+        }
+
+        function countFilesInRepo(repoName) {
+            return new Promise((resolve, reject) => {
+                var repoUrl = `https://api.github.com/repos/olegbeznogy/${repoName}/contents/`;
+                var fileExt = '.txt';
+                var page = 1;
+                var perPage = 100;
+
+                function fetchFiles(page) {
+                    var url = repoUrl + `?page=${page}&per_page=${perPage}`;
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(files => {
+                            var txtFiles = files.filter(file => file.name.endsWith(fileExt));
+                            totalFiles += txtFiles.length;
+                            if (txtFiles.length === perPage) {
+                                fetchFiles(page + 1);
+                            } else {
+                                resolve();
+                            }
+                        })
+                        .catch(reject);
                 }
+
+                fetchFiles(page);
+            });
+        }
+
+        function fetchFilesFromRepo(repoName) {
+            var repoUrl = `https://api.github.com/repos/olegbeznogy/${repoName}/contents/`;
+            var fileExt = '.txt';
+            var page = 1;
+            var perPage = 100;
+
+            function fetchFiles(page) {
+                var url = repoUrl + `?page=${page}&per_page=${perPage}`;
+                fetch(url)
+                    .then(response => response.json())
+                    .then(files => {
+                        var txtFiles = files.filter(file => file.name.endsWith(fileExt));
+                        txtFiles.forEach(file => {
+                            if (file.name !== 'connected_ips.txt') {
+                                loadFileContent(file);
+                            }
+                        });
+                        if (txtFiles.length === perPage) {
+                            fetchFiles(page + 1);
+                        }
+                    });
             }
-        };
-        xhr.open('GET', url, true);
-        xhr.send();
-    }
 
-    fetchFiles(page);
-}
-
-
-        function filterIPs() {
-            totalIPs = Array.from(originalIPs).map(function (line) {
-                return line.split(' - ');
-            }).reverse(); // Фильтруем исходный список
-            loadInitialIPs();
+            fetchFiles(page);
         }
 
         function loadFileContent(file) {
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    var lines = xhr.responseText.split('\n');
-                    lines.forEach(function(line) {
-                        originalIPs.add(line);
-                    });
-                    if (file.name !== 'connected_ips.txt') {
-                        filterIPs(); // Фильтруем список после загрузки всех файлов, кроме connected_ips.txt
-                    }
-                    loadedFiles++; // Увеличиваем счетчик загруженных файлов
-                    updateProgressBar((loadedFiles / totalFiles) * 100); // Обновляем прогресс-бар
-                    updateLoadingFileInfo(file.name); // Обновляем информацию о загружаемом файле
-                }
-            };
-            xhr.open('GET', file.download_url, true);
-            xhr.send();
+            fetch(file.download_url)
+                .then(response => response.text())
+                .then(text => {
+                    var lines = text.split('\n');
+                    lines.forEach(line => originalIPs.add(line));
+                    filterIPs();
+                    loadedFiles++;
+                    updateProgressBar((loadedFiles / totalFiles) * 100);
+                    updateLoadingFileInfo(file.name);
+                });
         }
 
-function hideProgressBar() {
-    var progressBarContainer = document.querySelector('.progress-bar-container');
-    progressBarContainer.style.transition = 'opacity 1s ease-in-out'; // Устанавливаем анимацию плавного исчезания
-    progressBarContainer.style.opacity = '0'; // Устанавливаем нулевую прозрачность для плавного исчезания
-    setTimeout(function () {
-        progressBarContainer.style.display = 'none'; // После завершения анимации скрываем прогресс-бар
-    }, 1000); // Задержка 1 секунда для завершения анимации
-}
+        function filterIPs() {
+            totalIPs = Array.from(originalIPs).map(line => line.split(' - ')).reverse();
+            loadInitialIPs();
+        }
 
-// Обновляем прогресс-бар и скрываем его, если загрузка завершена
-function updateProgressBar(progress) {
-    var progressBar = document.querySelector('.progress-bar');
-    progressBar.style.width = progress + '%'; // Устанавливаем ширину прогресс-бара в соответствии с прогрессом
-    if (progress >= 100) {
-        hideProgressBar(); // Если прогресс достиг 100%, скрываем прогресс-бар плавно
-    }
-}
+        function updateProgressBar(progress) {
+            var progressBar = document.querySelector('.progress-bar');
+            progressBar.style.width = progress + '%';
+            if (progress >= 100) {
+                hideProgressBar();
+            }
+        }
 
+        function hideProgressBar() {
+            var progressBarContainer = document.querySelector('.progress-bar-container');
+            progressBarContainer.style.transition = 'opacity 1s ease-in-out';
+            progressBarContainer.style.opacity = '0';
+            setTimeout(() => progressBarContainer.style.display = 'none', 1000);
+        }
 
         function updateLoadingFileInfo(filename) {
             var loadingFileInfo = document.querySelector('.loading-file-info');
-            loadingFileInfo.textContent = 'Loading: ' + filename; // Устанавливаем текст информации о загружаемом файле
-            loadingFileInfo.style.display = 'block'; // Показываем блок с информацией
+            loadingFileInfo.textContent = 'Loading: ' + filename;
+            loadingFileInfo.style.display = 'block';
         }
 
-        // Функции поиска и перезагрузки IP-адресов оставляются без изменений
-function searchIPs() {
-    var searchQuery = document.getElementById('searchInput').value;
-    var fixedTag = searchQuery.match(/^"([^"]+)"$/); // Проверяем наличие фиксированного тега
-    var negativeTag = searchQuery.match(/^-(\w+)$/); // Проверяем наличие негативного тега
+        function searchIPs() {
+            var searchQuery = document.getElementById('searchInput').value;
+            var fixedTag = searchQuery.match(/^"([^"]+)"$/);
+            var negativeTag = searchQuery.match(/^-(\w+)$/);
+            var searchPattern;
 
-    var searchPattern;
-    if (fixedTag) {
-        searchPattern = new RegExp(fixedTag[1], 'i'); // Создаем регулярное выражение из содержимого фиксированного тега
-    } else if (negativeTag) {
-        searchPattern = new RegExp(`(?!.*${negativeTag[1]}).*`, 'i'); // Создаем регулярное выражение для исключения негативного тега
-    } else {
-        searchPattern = new RegExp(searchQuery, 'i'); // Создаем регулярное выражение из всей строки поиска
-    }
+            if (fixedTag) {
+                searchPattern = new RegExp(fixedTag[1], 'i');
+            } else if (negativeTag) {
+                searchPattern = new RegExp(`(?!.*${negativeTag[1]}).*`, 'i');
+            } else {
+                searchPattern = new RegExp(searchQuery, 'i');
+            }
 
-    totalIPs = Array.from(originalIPs).filter(function (line) {
-        return searchPattern.test(line.toLowerCase());
-    }).map(function (line) {
-        return line.split(' - ');
-    }).reverse(); // Фильтруем и обновляем список
-    reloadIPs();
-}
-
-
+            totalIPs = Array.from(originalIPs).filter(line => searchPattern.test(line.toLowerCase())).map(line => line.split(' - ')).reverse();
+            reloadIPs();
+        }
 
         function reloadIPs() {
             var ipList = document.getElementById('ipList');
-            ipList.innerHTML = ''; // Очищаем текущий список IP-адресов
-            loadInitialIPs(); // Загружаем IP-адреса с учетом измененного списка
+            ipList.innerHTML = '';
+            loadInitialIPs();
         }
 
         function loadInitialIPs() {
             var ipList = document.getElementById('ipList');
-            ipList.innerHTML = ''; // Очищаем текущий список IP-адресов
-            totalIPs.slice(0, 500).forEach(function (ipData) {
+            ipList.innerHTML = '';
+            totalIPs.slice(0, 500).forEach(ipData => {
                 if (ipData.length === 2) {
                     var li = document.createElement('li');
                     var a = document.createElement('a');
                     a.textContent = ipData[0] + ' - ' + ipData[1];
-                    a.onclick = function () {
-                        redirectToIP(ipData[0]);
-                    };
+                    a.onclick = () => redirectToIP(ipData[0]);
                     li.appendChild(a);
                     ipList.appendChild(li);
                 }
@@ -293,17 +292,15 @@ function searchIPs() {
         function loadMoreIPsIfNeeded() {
             if (!loading && loadedIPs < totalIPs.length && shouldLoadMore()) {
                 loading = true;
-                setTimeout(function () {
+                setTimeout(() => {
                     var ipList = document.getElementById('ipList');
                     var remainingIPs = totalIPs.slice(loadedIPs, Math.min(loadedIPs + 100, totalIPs.length));
-                    remainingIPs.forEach(function (ipData) {
+                    remainingIPs.forEach(ipData => {
                         if (ipData.length === 2) {
                             var li = document.createElement('li');
                             var a = document.createElement('a');
                             a.textContent = ipData[0] + ' - ' + ipData[1];
-                            a.onclick = function () {
-                                redirectToIP(ipData[0]);
-                            };
+                            a.onclick = () => redirectToIP(ipData[0]);
                             li.appendChild(a);
                             ipList.appendChild(li);
                         }
@@ -326,14 +323,9 @@ function searchIPs() {
             window.open('http://' + ip, '_blank');
         }
 
-        // Показываем прогресс-бар загрузки
-        var progressBarContainer = document.querySelector('.progress-bar-container');
-        progressBarContainer.style.display = 'block';
+        // Start by fetching repositories
+        fetchRepositories();
 
-        // Загрузка списка файлов и IP-адресов
-        loadIPs();
-
-        // Обработчик события прокрутки страницы для динамической подгрузки IP-адресов
         window.addEventListener('scroll', loadMoreIPsIfNeeded);
     </script>
 </body>
