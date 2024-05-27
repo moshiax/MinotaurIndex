@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Repository Stats</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        canvas {
+            opacity: 0;
+            transition: opacity 0.5s ease; /* Уменьшаем продолжительность анимации появления диаграммы */
+        }
+
+        canvas.visible {
+            opacity: 1;
+        }
+
+        .progress-bar-container {
+            width: 50%;
+            height: 20px;
+            background-color: #555;
+            border-radius: 10px;
+            overflow: hidden;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .progress {
+            width: 0;
+            height: 100%;
+            background-color: #fff;
+        }
+
+        .switch-container, .reload-button {
+            display: none;
+            position: absolute;
+        }
+
+        .switch-container {
+            top: 20px;
+            right: 20px;
+        }
+
+        .reload-button {
+            top: 20px;
+            right: 90px;
+            width: 40px;
+            height: 40px;
+            background-color: #555;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            transition: background-color 0.3s ease;
+        }
+
+        .reload-button:hover {
+            background-color: #777;
+        }
+
+        /* Стили для свитча */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        /* Анимация для текста в середине диаграммы */
+        .chart-info {
+            opacity: 0;
+            transition: opacity 1s ease; /* Анимация плавного появления */
+            font-size: 20px; /* Уменьшаем размер шрифта для текста */
+            margin-top: -10px; /* Уменьшаем расстояние между текстом */
+            color: #fff; /* Цвет текста */
+        }
+
+        .chart-info.duplicates {
+            font-size: 14px; /* Уменьшаем размер шрифта для текста о дубликатах */
+            margin-top: -5px; /* Увеличиваем отступ */
+        }
+
+        .chart-info.visible {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar-container">
+        <div class="progress"></div>
+    </div>
+
+    <canvas id="chart"></canvas>
+    
+    <div class="chart-info" id="chartInfo"></div>
+
+    <div class="switch-container" id="switchContainer">
+        <label class="switch">
+            <input type="checkbox" id="chartSwitch" onchange="getStats()">
+            <span class="slider round"></span>
+        </label>
+    </div>
+
+    <button class="reload-button" onclick="resetData()" id="reloadButton" style="display: none;">
+        &#8635;
+    </button>
+
+    <script>
+        let chart = null;
+        let totalFiles = 0;
+        let filesLoaded = 0;
+        let totalDuplicates = 0;
+
+        async function getStats() {
+            const chartSwitch = document.getElementById('chartSwitch');
+            const chartType = chartSwitch.checked ? 'bar' : 'doughnut';
+
+            const owner = "olegbeznogy";
+            const repo = "minotaurindex";
+            const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents`);
+            const data = await response.json();
+            const fileExtensions = ['.txt']; // Add more file extensions if needed
+            const fileStats = {};
+            totalFiles = data.length;
+            totalDuplicates = 0; // Reset totalDuplicates when getting new stats
+
+            for (const file of data) {
+                if (file.type === 'file' && fileExtensions.some(ext => file.name.endsWith(ext))) {
+                    const fileResponse = await fetch(file.download_url);
+                    const fileContent = await fileResponse.text();
+                    const uniqueLines = new Set(fileContent.split('\n'));
+                    const allLines = fileContent.split('\n');
+                    const duplicates = allLines.length - uniqueLines.size; // Подсчет дубликатов
+                    totalDuplicates += duplicates; // Общее количество дубликатов
+                    const lines = uniqueLines.size; // Count unique lines
+                    fileStats[file.name] = { lines: lines, percentage: 0 };
+                    filesLoaded++;
+                    updateProgressBar();
+                }
+            }
+
+            // Calculate percentage for each file
+            let totalLines = Object.values(fileStats).reduce((acc, file) => acc + file.lines, 0);
+            for (const fileName in fileStats) {
+                fileStats[fileName].percentage = (fileStats[fileName].lines / totalLines) * 100;
+            }
+
+            // Sort fileStats by number of lines (ascending)
+            const sortedFileStats = Object.entries(fileStats).sort((a, b) => a[1].lines - b[1].lines);
+
+            // Destroy previous chart if exists
+            if (chart) {
+                chart.destroy();
+            }
+
+            const chartData = {
+                labels: sortedFileStats.map(entry => entry[0]),
+                datasets: [{
+                    label: 'Lines per File',
+                    data: sortedFileStats.map(entry => entry[1].lines),
+                    backgroundColor: getColorArray(sortedFileStats.map(entry => entry[1].percentage)),
+                    borderColor: 'white', // Устанавливаем цвет границ секторов
+                    borderWidth: 0
+                }]
+            };
+
+
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const fileName = context.label;
+                                const lines = fileStats[fileName].lines;
+                                const percentage = fileStats[fileName].percentage.toFixed(2);
+                                return `Lines: ${lines}, Percentage: ${percentage}%`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        display: false
+                    }
+                },
+                animation: {
+                    duration: 500, // Уменьшаем продолжительность анимации появления диаграммы
+                    easing: 'easeInOutQuad' // Тип анимации (можно выбрать другой)
+                }
+            };
+
+            chart = new Chart(document.getElementById('chart').getContext('2d'), {
+                type: chartType,
+                data: chartData,
+                options: chartOptions
+            });
+
+            // Show total lines and duplicates in the middle of the chart
+            const totalLinesElement = document.getElementById('chartInfo');
+            totalLinesElement.innerText = `${totalLines}\n(${totalDuplicates})`; // Добавлено дополнительное пустое пространство и скобки вокруг числа дубликатов
+            totalLinesElement.style.position = 'absolute';
+            totalLinesElement.style.top = '50%';
+            totalLinesElement.style.left = '50%';
+            totalLinesElement.style.transform = 'translate(-50%, -50%)';
+            totalLinesElement.style.color = '#fff';
+            totalLinesElement.style.fontSize = '32px';
+
+            // Применяем анимацию появления текста после появления диаграммы
+            setTimeout(() => {
+                totalLinesElement.classList.add('visible');
+            }, 1000); // Задержка в миллисекундах перед началом анимации текста
+
+            // Hide progress bar
+            const progressBarContainer = document.querySelector('.progress-bar-container');
+            progressBarContainer.style.opacity = '0';
+            setTimeout(() => {
+                progressBarContainer.style.display = 'none';
+                document.querySelector('canvas').classList.add('visible');
+                document.getElementById('switchContainer').style.display = 'block';
+                document.getElementById('reloadButton').style.display = 'block'; // Показываем кнопку перезагрузки после того, как диаграмма отобразилась
+            }, 1000); // Задержка в миллисекундах для анимации
+        }
+
+        function updateProgressBar() {
+            const progressElement = document.querySelector('.progress');
+            const progressBarWidth = (filesLoaded / totalFiles) * 100;
+            progressElement.style.width = `${progressBarWidth}%`;
+        }
+
+        function getColorArray(percentages) {
+            const colors = [];
+            for (const percent of percentages) {
+                if (percent >= 70) {
+                    colors.push('rgba(255, 0, 0, 0.5)'); // Красный для процентов выше или равно 70%
+                } else if (percent >= 50) {
+                    colors.push('rgba(255, 255, 0, 0.5)'); // Желтый для процентов выше или равно 50%
+                } else {
+                    colors.push('rgba(0, 255, 0, 0.5)'); // Зеленый для процентов ниже 50%
+                }
+            }
+            return colors;
+        }
+
+        async function resetData() {
+            // Пропадание текста при переключении диаграмы
+            const totalLinesElement = document.getElementById('chartInfo');
+            totalLinesElement.classList.remove('visible');
+
+            // Destroy chart if it exists
+            if (chart) {
+                chart.destroy();
+            }
+
+            // Show progress bar
+            const progressBarContainer = document.querySelector('.progress-bar-container');
+            progressBarContainer.style.display = 'block';
+            progressBarContainer.style.opacity = '1';
+
+            // Hide chart and switch container
+            document.querySelector('canvas').classList.remove('visible');
+            document.getElementById('switchContainer').style.display = 'none';
+            document.getElementById('reloadButton').style.display = 'none';
+
+            // Reset data variables
+            chart = null;
+            totalFiles = 0;
+            filesLoaded = 0;
+            totalDuplicates = 0;
+
+            // Clear file information
+            totalLinesElement.innerText = '';
+
+            // Reset progress bar
+            const progressElement = document.querySelector('.progress');
+            progressElement.style.width = '0';
+
+            // Restart data loading
+            setTimeout(getStats, 100); // Small delay for progress bar animation
+        }
+
+        // Show progress bar
+        const progressBarAnimation = setInterval(updateProgressBar, 10);
+        setTimeout(getStats, 10); // Start fetching data after progress bar animation
+    </script>
+</body>
+</html>

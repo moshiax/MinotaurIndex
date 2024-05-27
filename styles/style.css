@@ -1,0 +1,93 @@
+div {
+  color: #00FF00; /* Зелёный цвет текста */
+}
+
+body {
+  background-color: #000000; /* Чёрный цвет фона */
+  color: #00FF00; /* Зелёный цвет текста */
+  font-family: "Courier New", Courier, monospace; /* Моноширинный шрифт */
+  overflow: hidden;
+}
+
+i, a {
+  color: #00FF00; /* Зелёный цвет текста */
+  text-decoration: none;
+  font-size: 0.8em;
+  text-shadow: 0px 0px 0.3em #00FF00; /* Зелёная тень */
+}
+
+img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-17em, -19.3em);
+  height: 18em;
+  z-index: 1;
+}
+
+.after-separator-icon {
+  width: 40px;
+  height: 40px;
+  margin-top: 10px; /* Расстояние между иконкой и разделителем */
+}
+
+
+.shadow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+}
+
+
+
+#name {
+  font-family: "Matrix Code NFI", Arial, sans-serif; /* Шрифт матрицы */
+  font-weight: lighter;
+  font-size: 3.5em;
+  margin: 0px;
+  color: #FFFFFF; /* Красный цвет текста */
+  text-shadow: 0px 0px 0.5em #00FF00; /* Красная тень */
+}
+
+#pronouns {
+  font-family: "Matrix Code NFI", Arial, sans-serif; /* Шрифт матрицы */
+  font-size: 1em;
+
+  margin: 0px;
+}
+
+.separator {
+  width: 90%;
+  margin: 0.4em;
+  border-top: 2px solid #00FF00; /* Зелёная граница сверху */
+  box-shadow: 0 0 0.3em 0.01em #00FF00; /* Зелёная тень */
+}
+
+#runic-characters {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.rune {
+  position: absolute;
+  font-size: 40px;
+  opacity: 0;
+  color: #00FF00; /* Зелёный цвет текста */
+  text-shadow: 0 0 2px #00FF00, 0 0 4px #00FF00, 0 0 6px #00FF00, 0 0 8px #00FF00, 0 0 10px #00FF00; /* Зелёная тень */
+}
+.center {
+  background: #000000; /* Чёрный цвет фона */
+  width: 18em;
+  height: 18em;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
