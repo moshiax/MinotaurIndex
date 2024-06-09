@@ -181,9 +181,17 @@
             const chartSwitch = document.getElementById('chartSwitch');
             const chartType = chartSwitch.checked ? 'bar' : 'doughnut';
 
-            const owner = "olegbeznogy";
-            const reposResponse = await fetch(`https://api.github.com/users/${owner}/repos`);
-            const repos = await reposResponse.json();
+            const owner1 = "olegbeznogy";
+            const owner2 = "moshiax";
+            const repos1Response = await fetch(`https://api.github.com/users/${owner1}/repos`);
+            const repos1 = await repos1Response.json();
+
+            const repos2Response = await fetch(`https://api.github.com/users/${owner2}/repos`);
+            const repos2 = await repos2Response.json();
+
+            const repos2Filtered = repos2.filter(repo => /^minotaurindex\d+$/.test(repo.name));
+
+            const allRepos = [...repos1, ...repos2Filtered];
 
             const fileExtensions = ['.txt'];
             const fileStats = {};
@@ -191,9 +199,9 @@
             filesLoaded = 0;
             totalDuplicates = 0;
 
-            for (const repo of repos) {
+            for (const repo of allRepos) {
                 const repoName = repo.name;
-                const contentsResponse = await fetch(`https://api.github.com/repos/${owner}/${repoName}/contents`);
+                const contentsResponse = await fetch(`https://api.github.com/repos/${repo.owner.login}/${repoName}/contents`);
                 const contents = await contentsResponse.json();
 
                 for (const file of contents) {
@@ -203,9 +211,9 @@
                 }
             }
 
-            for (const repo of repos) {
+            for (const repo of allRepos) {
                 const repoName = repo.name;
-                const contentsResponse = await fetch(`https://api.github.com/repos/${owner}/${repoName}/contents`);
+                const contentsResponse = await fetch(`https://api.github.com/repos/${repo.owner.login}/${repoName}/contents`);
                 const contents = await contentsResponse.json();
 
                 for (const file of contents) {
