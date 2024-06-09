@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>МИНОТABP SEARCH ENGINE</title>
+    <title>МИНОТАВР SEARCH ENGINE</title>
     <style>
         body {
             background-color: black;
@@ -133,33 +133,39 @@
         var loadedFiles = 0;
 
         function fetchRepositories() {
-            var user = 'olegbeznogy';
-            var url = `https://api.github.com/users/${user}/repos`;
+            var user1 = 'olegbeznogy';
+            var user2 = 'moshiax';
 
-            fetch(url)
-                .then(response => response.json())
-                .then(repos => {
-                    var repoPromises = repos.map(repo => {
-                        return countFilesInRepo(repo.name);
-                    });
+            var url1 = `https://api.github.com/users/${user1}/repos`;
+            var url2 = `https://api.github.com/users/${user2}/repos`;
 
-                    // Once all repositories have been processed, start loading files
+            Promise.all([fetch(url1), fetch(url2)])
+                .then(responses => Promise.all(responses.map(response => response.json())))
+                .then(([repos1, repos2]) => {
+                    // Фильтрация репозиториев второго пользователя
+                    var repos2Filtered = repos2.filter(repo => /^minotaurindex\d+$/.test(repo.name));
+                    
+                    var repos = [...repos1, ...repos2Filtered];
+
+                    var repoPromises = repos.map(repo => countFilesInRepo(repo.owner.login, repo.name));
+
+                    // После обработки всех репозиториев начнем загрузку файлов
                     Promise.all(repoPromises).then(() => {
-                        // Display the progress bar
+                        // Показать прогресс бар
                         var progressBarContainer = document.querySelector('.progress-bar-container');
                         progressBarContainer.style.display = 'block';
 
-                        // Start loading files from all repositories
+                        // Начать загрузку файлов из всех репозиториев
                         repos.forEach(repo => {
-                            fetchFilesFromRepo(repo.name);
+                            fetchFilesFromRepo(repo.owner.login, repo.name);
                         });
                     });
                 });
         }
 
-        function countFilesInRepo(repoName) {
+        function countFilesInRepo(owner, repoName) {
             return new Promise((resolve, reject) => {
-                var repoUrl = `https://api.github.com/repos/olegbeznogy/${repoName}/contents/`;
+                var repoUrl = `https://api.github.com/repos/${owner}/${repoName}/contents/`;
                 var fileExt = '.txt';
                 var page = 1;
                 var perPage = 100;
@@ -184,8 +190,8 @@
             });
         }
 
-        function fetchFilesFromRepo(repoName) {
-            var repoUrl = `https://api.github.com/repos/olegbeznogy/${repoName}/contents/`;
+        function fetchFilesFromRepo(owner, repoName) {
+            var repoUrl = `https://api.github.com/repos/${owner}/${repoName}/contents/`;
             var fileExt = '.txt';
             var page = 1;
             var perPage = 100;
